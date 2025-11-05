@@ -1,27 +1,47 @@
 #include <Arduino.h>
+#include <Keypad.h> // Panggil library yang sudah diinstal
 
-#define LED_EKSTERNAL D1 // Pin D1 (GPIO5)
+// --- Definisi Keypad ---
+const byte ROWS = 4; // 4 baris
+const byte COLS = 4; // 4 kolom
 
+// Layout tombol di keypad Anda
+char keys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+
+// --- Peta Pin "Dokumen Emas" Kita ---
+// Ini adalah 6 pin "Aman" + 2 pin "Mengganggu"
+byte rowPins[ROWS] = {D1, D2, D5, D6}; // Pin untuk Baris R1-R4
+byte colPins[COLS] = {D7, D0, RX, TX}; // Pin untuk Kolom C1-C4
+
+// Buat objek keypad
+Keypad customKeypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+// --- Setup ---
 void setup() {
-  Serial.begin(115200);
-  delay(1000);
-  Serial.println("\nFase 2.A: Tes LED Eksternal (Indra Penglihatan)");
+  // Serial.begin(115200); <-- DILARANG! PINNYA TERPAKAI.
+  // Serial.println("Test"); <-- DILARANG!
 
-  // Set kedua LED sebagai OUTPUT
+  // LED_BUILTIN (D4) adalah satu-satunya teman kita
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(LED_EKSTERNAL, OUTPUT); 
+  digitalWrite(LED_BUILTIN, HIGH); // LED internal mati (HIGH = Mati)
 }
 
+// --- Loop ---
 void loop() {
-  Serial.println("LED Eksternal Nyala, LED Internal Mati");
-  digitalWrite(LED_EKSTERNAL, HIGH); // LED Eksternal nyala di HIGH
-  digitalWrite(LED_BUILTIN, HIGH);   // LED Internal mati di HIGH
+  // Baca tombol yang ditekan
+  char key = customKeypad.getKey();
 
-  delay(1000);
-
-  Serial.println("LED Eksternal Mati, LED Internal Nyala");
-  digitalWrite(LED_EKSTERNAL, LOW);  // LED Eksternal mati di LOW
-  digitalWrite(LED_BUILTIN, LOW);    // LED Internal nyala di LOW
-  
-  delay(1000);
+  // Jika ada tombol YANG BARU SAJA DITEKAN:
+  if (key) {
+    // Beri sinyal debug: Kedipkan LED biru SATU KALI
+    
+    digitalWrite(LED_BUILTIN, LOW);  // Nyalakan LED (LOW = Nyala)
+    delay(50);                      // Jeda 50 milidetik (kedipan cepat)
+    digitalWrite(LED_BUILTIN, HIGH); // Matikan LED
+  }
 }
