@@ -1,26 +1,27 @@
 #include <Arduino.h>
 
-// Di board Lolin D1 R1, LED_BUILTIN terhubung ke pin D4 (GPIO2)
-// Kita bisa pakai konstanta LED_BUILTIN karena kita sudah menentukan
-// 'board = lolin_d1_r1' di platformio.ini
+#define LED_EKSTERNAL D1 // Pin D1 (GPIO5)
 
 void setup() {
   Serial.begin(115200);
-  delay(1000); 
-  Serial.println("\n\n--- TEST ---");
-  Serial.println("Fase 1, Langkah 4: Tes LED Internal.");
+  delay(1000);
+  Serial.println("\nFase 2.A: Tes LED Eksternal (Indra Penglihatan)");
 
-  // Set pin LED sebagai OUTPUT
+  // Set kedua LED sebagai OUTPUT
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.println("LED D4 (LED_BUILTIN) diset sebagai OUTPUT.");
+  pinMode(LED_EKSTERNAL, OUTPUT); 
 }
 
 void loop() {
-  Serial.println("LED Nyala!");
-  digitalWrite(LED_BUILTIN, LOW);   // LED internal Wemos/Lolin nyala saat LOW
-  delay(1000);                     // Tunggu 1 detik
+  Serial.println("LED Eksternal Nyala, LED Internal Mati");
+  digitalWrite(LED_EKSTERNAL, HIGH); // LED Eksternal nyala di HIGH
+  digitalWrite(LED_BUILTIN, HIGH);   // LED Internal mati di HIGH
 
-  Serial.println("LED Mati!");
-  digitalWrite(LED_BUILTIN, HIGH);  // LED internal Wemos/Lolin mati saat HIGH
-  delay(1000);                     // Tunggu 1 detik
+  delay(1000);
+
+  Serial.println("LED Eksternal Mati, LED Internal Nyala");
+  digitalWrite(LED_EKSTERNAL, LOW);  // LED Eksternal mati di LOW
+  digitalWrite(LED_BUILTIN, LOW);    // LED Internal nyala di LOW
+  
+  delay(1000);
 }
