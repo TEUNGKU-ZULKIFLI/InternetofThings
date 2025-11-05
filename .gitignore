@@ -1,0 +1,9 @@
+# PlatformIO build artifacts
+.pio/
+.pioenvs/
+.piomemcheck/
+.pio/libdeps/
+.pio/build/
+
+# VSCode personal settings
+.vscode/
