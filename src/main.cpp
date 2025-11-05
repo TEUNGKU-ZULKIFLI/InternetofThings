@@ -1,47 +1,34 @@
 #include <Arduino.h>
-#include <Keypad.h> // Panggil library yang sudah diinstal
+#include <Servo.h> // Panggil library Servo (bawaan)
 
-// --- Definisi Keypad ---
-const byte ROWS = 4; // 4 baris
-const byte COLS = 4; // 4 kolom
+// Buat objek servo untuk dikontrol
+Servo myServo;  
 
-// Layout tombol di keypad Anda
-char keys[ROWS][COLS] = {
-  {'1','2','3','A'},
-  {'4','5','6','B'},
-  {'7','8','9','C'},
-  {'*','0','#','D'}
-};
+// Definisikan pin tempat kita mencolokkan sinyal servo
+int servoPin = D5; // Sesuai "Dokumen Emas", D5 adalah GPIO14
 
-// --- Peta Pin "Dokumen Emas" Kita ---
-// Ini adalah 6 pin "Aman" + 2 pin "Mengganggu"
-byte rowPins[ROWS] = {D1, D2, D5, D6}; // Pin untuk Baris R1-R4
-byte colPins[COLS] = {D7, D0, RX, TX}; // Pin untuk Kolom C1-C4
-
-// Buat objek keypad
-Keypad customKeypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
-
-// --- Setup ---
 void setup() {
-  // Serial.begin(115200); <-- DILARANG! PINNYA TERPAKAI.
-  // Serial.println("Test"); <-- DILARANG!
+  Serial.begin(115200); // KITA BISA PAKAI SERIAL LAGI! HORE!
+  delay(1000);
+  Serial.println("\n\nFase 2.C: Tes Servo (Gerakan Presisi)");
 
-  // LED_BUILTIN (D4) adalah satu-satunya teman kita
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH); // LED internal mati (HIGH = Mati)
+  // 'Attach' atau "pasang" objek servo ke pin fisik
+  myServo.attach(servoPin); 
+  Serial.println("Servo terpasang di pin D5.");
+
+  // Pindahkan servo ke posisi tengah (90 derajat) saat start
+  myServo.write(90); 
+  Serial.println("Servo bergerak ke 90 derajat.");
 }
 
-// --- Loop ---
 void loop() {
-  // Baca tombol yang ditekan
-  char key = customKeypad.getKey();
+  // Gerakkan servo ke 0 derajat (posisi min)
+  Serial.println("Bergerak ke 0 derajat...");
+  myServo.write(0);
+  delay(1500); // Beri waktu 1.5 detik bagi servo untuk bergerak
 
-  // Jika ada tombol YANG BARU SAJA DITEKAN:
-  if (key) {
-    // Beri sinyal debug: Kedipkan LED biru SATU KALI
-    
-    digitalWrite(LED_BUILTIN, LOW);  // Nyalakan LED (LOW = Nyala)
-    delay(50);                      // Jeda 50 milidetik (kedipan cepat)
-    digitalWrite(LED_BUILTIN, HIGH); // Matikan LED
-  }
+  // Gerakkan servo ke 180 derajat (posisi maks)
+  Serial.println("Bergerak ke 180 derajat...");
+  myServo.write(180);
+  delay(1500); // Beri waktu 1.5 detik bagi servo untuk bergerak
 }
